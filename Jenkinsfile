@@ -1,67 +1,23 @@
-pipeline {
-    agent any
+stage('Deploy') {
+    steps {
+        sh '''
+            echo "Deploying Forest Honey..."
 
-    environment {
-        DOCKER_IMAGE = 'yogesh0730/forest-honey'
-    }
+            docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
-    stages {
+            docker stop forest-honey || true
+            docker rm forest-honey || true
 
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .'
-            }
-        }
+            docker run -d \
+                --name forest-honey \
+                -p 8081:80 \
+                ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
-        stage('Docker Test') {
-            steps {
-                sh '''
-                    docker rm -f forest-honey-test || true
+            sleep 5
 
-                    docker run -d \
-                        --name forest-honey-test \
-                        -p 8082:80 \
-                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
+            curl -f http://localhost:8081
 
-                    sleep 5
-
-                    curl -f http://localhost:8082
-
-                    docker rm -f forest-honey-test
-                '''
-            }
-        }
-
-        stage('Docker Push') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-creds',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    sh '''
-                        echo "$DOCKER_PASSWORD" | docker login \
-                            -u "$DOCKER_USERNAME" \
-                            --password-stdin
-
-                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
-
-                        docker logout
-                    '''
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Forest Honey CI pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Forest Honey pipeline failed!'
-        }
+            echo "Forest Honey deployed successfully!"
+        '''
     }
 }
