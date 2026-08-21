@@ -1,23 +1,91 @@
-stage('Deploy') {
-    steps {
-        sh '''
-            echo "Deploying Forest Honey..."
+pipeline {
+    agent any
 
-            docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
+    environment {
+        DOCKER_IMAGE = 'yogesh0730/forest-honey'
+    }
 
-            docker stop forest-honey || true
-            docker rm forest-honey || true
+    stages {
 
-            docker run -d \
-                --name forest-honey \
-                -p 8081:80 \
-                ${DOCKER_IMAGE}:${BUILD_NUMBER}
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .'
+            }
+        }
 
-            sleep 5
+        stage('Docker Test') {
+            steps {
+                sh '''
+                    docker rm -f forest-honey-test || true
 
-            curl -f http://localhost:8081
+                    docker run -d \
+                        --name forest-honey-test \
+                        -p 8082:80 \
+                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
-            echo "Forest Honey deployed successfully!"
-        '''
+                    sleep 5
+
+                    curl -f http://localhost:8082
+
+                    docker rm -f forest-honey-test
+                '''
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login \
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
+
+                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                        docker logout
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    echo "Deploying Forest Honey..."
+
+                    docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                    docker stop forest-honey || true
+                    docker rm forest-honey || true
+
+                    docker run -d \
+                        --name forest-honey \
+                        -p 8081:80 \
+                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                    sleep 5
+
+                    curl -f http://localhost:8081
+
+                    echo "Forest Honey deployed successfully!"
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Forest Honey pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Forest Honey pipeline failed!'
+        }
     }
 }
