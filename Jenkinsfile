@@ -3,86 +3,51 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'yogesh0730/forest-honey'
+        IMAGE_TAG    = '1'
     }
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Pull Docker Image') {
             steps {
                 sh '''
-                    docker build \
-                        -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                    echo "Pulling Docker image..."
+
+                    docker pull ${DOCKER_IMAGE}:${IMAGE_TAG}
                 '''
             }
         }
 
-        stage('Test Container') {
+        stage('Stop Old Container') {
             steps {
                 sh '''
-                    docker rm -f test-container || true
-
-                    docker run -d \
-                        --name test-container \
-                        -p 8082:80 \
-                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
-
-                    sleep 5
-
-                    curl -f http://localhost:8082
-
-                    docker rm -f test-container
+                    docker stop forest-honey || true
+                    docker rm forest-honey || true
                 '''
             }
         }
 
-        stage('Push Image to Docker Hub') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-creds',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    sh '''
-                        echo "$DOCKER_PASSWORD" | docker login \
-                            -u "$DOCKER_USERNAME" \
-                            --password-stdin
-
-                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
-
-                        docker logout
-                    '''
-                }
-            }
-        }
-
-        stage('Deploy') {
+        stage('Deploy Container') {
             steps {
                 sh '''
-                    echo "Deploying application..."
-
-                    docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
-
-                    docker stop my-app || true
-                    docker rm my-app || true
+                    echo "Starting application..."
 
                     docker run -d \
-                        --name my-app \
+                        --name forest-honey \
                         -p 8081:80 \
-                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                        ${DOCKER_IMAGE}:${IMAGE_TAG}
+                '''
+            }
+        }
 
+        stage('Health Check') {
+            steps {
+                sh '''
                     sleep 5
 
                     curl -f http://localhost:8081
 
-                    echo "Application deployed successfully!"
+                    echo "Application is running successfully!"
                 '''
             }
         }
@@ -90,11 +55,11 @@ pipeline {
 
     post {
         success {
-            echo 'CI/CD Pipeline completed successfully!'
+            echo 'Deployment completed successfully!'
         }
 
         failure {
-            echo 'CI/CD Pipeline failed!'
+            echo 'Deployment failed!'
         }
     }
 }
