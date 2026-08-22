@@ -7,19 +7,28 @@ pipeline {
 
     stages {
 
-        stage('Docker Build') {
+        stage('Checkout') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .'
+                checkout scm
             }
         }
 
-        stage('Docker Test') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    docker rm -f forest-honey-test || true
+                    docker build \
+                        -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                '''
+            }
+        }
+
+        stage('Test Container') {
+            steps {
+                sh '''
+                    docker rm -f test-container || true
 
                     docker run -d \
-                        --name forest-honey-test \
+                        --name test-container \
                         -p 8082:80 \
                         ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
@@ -27,12 +36,12 @@ pipeline {
 
                     curl -f http://localhost:8082
 
-                    docker rm -f forest-honey-test
+                    docker rm -f test-container
                 '''
             }
         }
 
-        stage('Docker Push') {
+        stage('Push Image to Docker Hub') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -57,15 +66,15 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    echo "Deploying Forest Honey..."
+                    echo "Deploying application..."
 
                     docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
-                    docker stop forest-honey || true
-                    docker rm forest-honey || true
+                    docker stop my-app || true
+                    docker rm my-app || true
 
                     docker run -d \
-                        --name forest-honey \
+                        --name my-app \
                         -p 8081:80 \
                         ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
@@ -73,7 +82,7 @@ pipeline {
 
                     curl -f http://localhost:8081
 
-                    echo "Forest Honey deployed successfully!"
+                    echo "Application deployed successfully!"
                 '''
             }
         }
@@ -81,11 +90,11 @@ pipeline {
 
     post {
         success {
-            echo 'Forest Honey pipeline completed successfully!'
+            echo 'CI/CD Pipeline completed successfully!'
         }
 
         failure {
-            echo 'Forest Honey pipeline failed!'
+            echo 'CI/CD Pipeline failed!'
         }
     }
 }
