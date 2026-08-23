@@ -66,15 +66,17 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    echo "Deploying Forest Honey to Kubernetes..."
+                     echo "Deploying Forest Honey to Kubernetes..."
 
-                    kubectl set image deployment/forest-honey \
-                        forest-honey=${DOCKER_IMAGE}:${BUILD_NUMBER}
+                     export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-                    kubectl rollout status deployment/forest-honey
+                     kubectl set image deployment/forest-honey \
+                     forest-honey=${DOCKER_IMAGE}:${BUILD_NUMBER}
 
-                    echo "Kubernetes deployment successful!"
-                '''
+                     kubectl rollout status deployment/forest-honey
+
+                     echo "Kubernetes deployment successful!"
+                   '''
             }
         }
     }
