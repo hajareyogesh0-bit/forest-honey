@@ -1,160 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NI Honey | Pure Forest Honey</title>
-
-    <link rel="stylesheet" href="CSS/style.css">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="NI Honey — premium forest honey, naturally sourced and carefully packed.">
+<title>NI Honey | Premium Forest Honey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<div class="topbar">🌿 NATURALLY SOURCED FOREST HONEY <span>•</span> FREE DELIVERY ABOVE ₹999</div>
 
-<header>
-
-    <nav class="navbar">
-
-        <div class="logo">
-            🍯 NI Honey
-        </div>
-
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Benefits</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-
-    </nav>
-
+<header class="header">
+<nav class="nav container">
+<a class="logo" href="#home">🍯 <span><small>PURE</small>NI HONEY</span></a>
+<button class="menu" id="menu" aria-label="Menu">☰</button>
+<div class="links" id="links">
+<a href="#home">Home</a><a href="#shop">Shop</a><a href="#story">Our Story</a><a href="#quality">Quality</a><a href="#contact">Contact</a>
+</div>
+<div class="actions">
+<button id="searchBtn">⌕</button>
+<button class="bag" id="bag">Bag <b id="count">0</b></button>
+</div>
+</nav>
 </header>
 
+<div class="search" id="search"><div class="container"><input id="searchInput" placeholder="Search honey..."><button id="closeSearch">×</button></div></div>
 
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h1>Pure Forest Honey</h1>
-
-        <p>
-            Harvested from nature with love.
-            Rich in taste, naturally sweet,
-            and packed with goodness.
-        </p>
-
-        <a href="#" class="btn">Shop Now</a>
-
-    </div>
-
-</section>
-
-
-<section class="about">
-
-    <h2>About NI Honey</h2>
-
-    <p>
-        NI Honey brings premium forest honey
-        collected from trusted beekeepers.
-        Every bottle preserves the authentic
-        flavor and natural goodness of honey.
-    </p>
-
-</section>
-
-
-<section class="products">
-
-<h2>Our Products</h2>
-
-<div class="product-container">
-
-<div class="card">
-
-<h3>Forest Honey 250g</h3>
-
-<p>₹349</p>
-
-<button>Add to Cart</button>
-
+<main>
+<section class="hero" id="home">
+<div class="hero-bg"></div><div class="container hero-content">
+<span class="eyebrow">FROM THE FOREST • WITH CARE</span>
+<h1>Nature's golden<br><em>gift.</em></h1>
+<p>Premium forest honey with a rich natural character — carefully sourced and packed for everyday moments.</p>
+<div class="hero-actions"><a class="btn gold" href="#shop">Shop collection →</a><a class="light-link" href="#story">Why NI Honey ↗</a></div>
+<div class="stats"><div><b>100%</b><small>NATURAL<br>SOURCE</small></div><div><b>3</b><small>JAR<br>SIZES</small></div><div><b>2026</b><small>NI HONEY<br>JOURNEY</small></div></div>
 </div>
-
-<div class="card">
-
-<h3>Forest Honey 500g</h3>
-
-<p>₹499</p>
-
-<button>Add to Cart</button>
-
-</div>
-
-<div class="card">
-
-<h3>Forest Honey 1kg</h3>
-
-<p>₹799</p>
-
-<button>Add to Cart</button>
-
-</div>
-
-</div>
-
 </section>
 
+<div class="marquee">PURE HONEY ✦ FOREST SOURCED ✦ NO ADDED SUGAR ✦ SMALL BATCH ✦ PURE HONEY ✦ FOREST SOURCED</div>
 
-<section class="benefits">
-
-<h2>Why Choose NI Honey?</h2>
-
-<ul>
-
-<li>🍯 100% Pure</li>
-
-<li>🌿 No Added Sugar</li>
-
-<li>🐝 Natural Forest Source</li>
-
-<li>💪 Rich in Antioxidants</li>
-
-<li>❤️ Supports Healthy Lifestyle</li>
-
-</ul>
-
+<section class="story section container" id="story">
+<div class="photo reveal"><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1200&q=90"><div class="float"><small>OUR PROMISE</small><strong>Simple.<br>Honest.<br>Natural.</strong></div></div>
+<div class="copy reveal"><span class="label">THE NI HONEY STORY</span><h2>Good honey starts with <em>good nature.</em></h2><p>We believe great honey doesn't need a complicated story. It starts with bees, flowers, forests and people who care about doing things properly.</p><p>NI Honey connects you with the natural character of forest honey while keeping the experience simple and transparent.</p><div class="signature">NI HONEY <small>From nature to your table</small></div></div>
 </section>
 
+<section class="shop section" id="shop"><div class="container">
+<div class="section-head"><div><span class="label">THE COLLECTION</span><h2>Find your perfect jar.</h2></div><select id="sort"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select></div>
+<div class="products" id="products">
 
-<section class="contact">
+<article class="product" data-name="Forest Honey 250g" data-price="349">
+<div class="product-image"><span>STARTER</span><button class="wish">♡</button><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=900&q=85"></div>
+<div class="product-body"><div class="title"><div><small>FOREST HONEY</small><h3>Forest Honey 250g</h3></div><b>₹349</b></div><p>Ideal for tasting, gifting and smaller households.</p><button class="add" data-id="250" data-name="Forest Honey 250g" data-price="349">Add to bag →</button></div>
+</article>
 
-<h2>Contact Us</h2>
+<article class="product featured" data-name="Forest Honey 500g" data-price="499">
+<div class="product-image"><span class="best">BESTSELLER</span><button class="wish">♡</button><img src="https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=900&q=85"></div>
+<div class="product-body"><div class="title"><div><small>FOREST HONEY</small><h3>Forest Honey 500g</h3></div><b>₹499</b></div><p>The everyday favourite for breakfast, drinks and recipes.</p><button class="add" data-id="500" data-name="Forest Honey 500g" data-price="499">Add to bag →</button></div>
+</article>
 
-<form>
+<article class="product" data-name="Forest Honey 1kg" data-price="799">
+<div class="product-image"><span>VALUE</span><button class="wish">♡</button><img src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=900&q=85"></div>
+<div class="product-body"><div class="title"><div><small>FOREST HONEY</small><h3>Forest Honey 1kg</h3></div><b>₹799</b></div><p>A generous pantry size for families and regular use.</p><button class="add" data-id="1000" data-name="Forest Honey 1kg" data-price="799">Add to bag →</button></div>
+</article>
+</div><div class="no-results" id="noResults">No products found.</div>
+</div></section>
 
-<input type="text" placeholder="Your Name">
+<section class="quality section container" id="quality"><div class="quality-copy reveal"><span class="label">THE NI STANDARD</span><h2>We keep it <em>naturally simple.</em></h2><p>Every detail matters — from sourcing to the moment the jar reaches your kitchen.</p></div>
+<div class="quality-grid"><article><b>01</b><i>🌿</i><h3>Natural source</h3><p>Inspired by the rich floral character of forest environments.</p></article><article><b>02</b><i>🐝</i><h3>Bee conscious</h3><p>We value responsible practices and natural ecosystems.</p></article><article><b>03</b><i>🍯</i><h3>Small batch</h3><p>Carefully packed with attention to consistency and presentation.</p></article><article><b>04</b><i>✓</i><h3>No added sugar</h3><p>Our honey is presented without adding refined sugar.</p></article></div></section>
 
-<input type="email" placeholder="Email">
+<section class="banner"><div class="container"><span class="eyebrow">A SIMPLE DAILY RITUAL</span><h2>Drizzle. Stir. Enjoy.</h2><p>Breakfast toast, warm drinks, desserts or straight from the spoon.</p><a class="btn gold" href="#shop">Shop honey →</a></div></section>
 
-<textarea placeholder="Message"></textarea>
-
-<button type="submit">Send</button>
-
-</form>
-
+<section class="faq section container"><span class="label">QUESTIONS</span><h2>Good to know.</h2>
+<details><summary>How should I store honey? <b>+</b></summary><p>Keep the jar tightly closed in a cool, dry place away from direct sunlight.</p></details>
+<details><summary>Does NI Honey contain added sugar? <b>+</b></summary><p>Our product messaging is focused on honey with no added refined sugar.</p></details>
+<details><summary>Can I order in bulk? <b>+</b></summary><p>Yes. Contact us for bulk, gifting or business-order enquiries.</p></details>
 </section>
 
+<section class="contact" id="contact"><div class="container contact-grid"><div><span class="eyebrow">LET'S CONNECT</span><h2>Have a question?<br><em>Talk to us.</em></h2><p>For product questions, bulk orders or gifting enquiries, send us a message.</p><strong>✉ hello@nihoney.in</strong><strong>☎ +91 00000 00000</strong></div>
+<form id="form"><label>Name<input name="name" required placeholder="Your name"></label><label>Email<input name="email" type="email" required placeholder="you@example.com"></label><label>Message<textarea name="message" required rows="5" placeholder="How can we help?"></textarea></label><button class="btn gold">Send enquiry →</button><small id="formMsg"></small></form></div></section>
+</main>
 
-<footer>
+<footer><div class="container foot"><a class="logo" href="#home">🍯 <span><small>PURE</small>NI HONEY</span></a><p>Pure forest honey, thoughtfully sourced.</p><div>IG&nbsp;&nbsp; FB&nbsp;&nbsp; WA</div></div><div class="container bottom">© 2026 NI Honey. All rights reserved.</div></footer>
 
-<p>© 2026 NI Honey. All Rights Reserved.</p>
-
-</footer>
-
-</body>
-</html>
+<aside class="cart" id="cart"><div class="cart-head"><div><small>YOUR BAG</small><h2>Shopping bag</h2></div><button id="closeCart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>Subtotal</span><b id="total">₹0</b><button id="checkout" disabled>Continue to checkout →</button></div></aside><div class="overlay" id="overlay"></div><div class="toast" id="toast"></div>
+<script src="script.js"></script>
+</body></html>
