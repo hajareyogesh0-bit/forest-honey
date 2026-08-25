@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yogesh0730/forest-honey'
-        IMAGE_TAG    = '1'
+        DOCKER_IMAGE = 'yogesh0730/kml-milk-project'
+        IMAGE_TAG    = '2'
     }
 
     stages {
