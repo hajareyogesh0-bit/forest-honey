@@ -1,19 +1,24 @@
-const state={cart:JSON.parse(localStorage.getItem('niHoneyCart')||'[]'),wish:JSON.parse(localStorage.getItem('niHoneyWish')||'[]')};
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const money=n=>'₹'+Number(n).toLocaleString('en-IN');
-function save(){localStorage.setItem('niHoneyCart',JSON.stringify(state.cart));localStorage.setItem('niHoneyWish',JSON.stringify(state.wish))}
-function toast(t){const x=$('#toast');x.textContent=t;x.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>x.classList.remove('show'),2200)}
-function render(){const count=state.cart.reduce((a,x)=>a+x.qty,0),total=state.cart.reduce((a,x)=>a+x.price*x.qty,0);$('#count').textContent=count;$('#total').textContent=money(total);$('#checkout').disabled=!state.cart.length;if(!state.cart.length){$('#cartItems').innerHTML='<div class="empty">Your bag is empty.<br>Add something naturally sweet.</div>';return}$('#cartItems').innerHTML=state.cart.map(x=>`<div class="cart-item"><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=250&q=70"><div><h4>${x.name}</h4><p>${money(x.price)} each</p><div class="qty"><button data-a="minus" data-id="${x.id}">−</button><b>${x.qty}</b><button data-a="plus" data-id="${x.id}">+</button></div></div><button class="remove" data-a="remove" data-id="${x.id}">REMOVE</button></div>`).join('')}
-function openCart(v){$('#cart').classList.toggle('open',v);$('#overlay').classList.toggle('show',v);document.body.classList.toggle('lock',v)}
-$$('.add').forEach(b=>b.onclick=()=>{let x=state.cart.find(x=>x.id===b.dataset.id);if(x)x.qty++;else state.cart.push({id:b.dataset.id,name:b.dataset.name,price:+b.dataset.price,qty:1});save();render();toast(b.dataset.name+' added to your bag')});
-$('#cartItems').onclick=e=>{const b=e.target.closest('button');if(!b)return;const x=state.cart.find(x=>x.id===b.dataset.id);if(!x)return;if(b.dataset.a==='plus')x.qty++;if(b.dataset.a==='minus')x.qty--;if(b.dataset.a==='remove'||x.qty<1)state.cart=state.cart.filter(y=>y.id!==x.id);save();render()};
-$('#bag').onclick=()=>openCart(true);$('#closeCart').onclick=()=>openCart(false);$('#overlay').onclick=()=>openCart(false);
-$('#checkout').onclick=()=>toast('Checkout is ready for payment integration.');
-$$('.wish').forEach(b=>{const id=b.closest('.product').dataset.name;if(state.wish.includes(id))b.classList.add('saved');b.onclick=()=>{if(state.wish.includes(id)){state.wish=state.wish.filter(x=>x!==id);b.classList.remove('saved');toast('Removed from wishlist')}else{state.wish.push(id);b.classList.add('saved');toast('Added to wishlist')}save()}});
-$('#menu').onclick=()=>$('#links').classList.toggle('open');
-$('#searchBtn').onclick=()=>{$('#search').classList.add('open');$('#searchInput').focus()};$('#closeSearch').onclick=()=>{$('#search').classList.remove('open');$('#searchInput').value='';filter('')};
-function filter(q){q=q.toLowerCase();let n=0;$$('.product').forEach(p=>{const ok=p.dataset.name.toLowerCase().includes(q);p.style.display=ok?'':'none';if(ok)n++});$('#noResults').style.display=n?'none':'block'}
-$('#searchInput').oninput=e=>filter(e.target.value);
-$('#sort').onchange=e=>{const box=$('#products'),a=$$('.product');a.sort((x,y)=>e.target.value==='low'?+x.dataset.price-+y.dataset.price:e.target.value==='high'?+y.dataset.price-+x.dataset.price:0);a.forEach(x=>box.appendChild(x))};
-$('#form').onsubmit=e=>{e.preventDefault();if(!e.target.checkValidity()){e.target.reportValidity();return}$('#formMsg').textContent='Thank you! Your enquiry has been received.';e.target.reset();toast('Message sent successfully')};
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});$$('.reveal').forEach(x=>io.observe(x));render();
+// Welcome message
+console.log("Welcome to NI Honey");
+
+// Add to Cart buttons
+const buttons = document.querySelectorAll(".card button");
+
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        alert("Product added to cart!");
+    });
+});
+
+// Contact Form
+const form = document.querySelector("form");
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    alert("Thank you! Your message has been received.");
+
+    form.reset();
+
+});

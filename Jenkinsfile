@@ -2,64 +2,92 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yogesh0730/kml-milk-project'
-        IMAGE_TAG    = '2'
+        DOCKER_IMAGE = 'yogesh0730/forest-honey'
     }
 
     stages {
 
-        stage('Pull Docker Image') {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    echo "Pulling Docker image..."
-
-                    docker pull ${DOCKER_IMAGE}:${IMAGE_TAG}
+                    docker build \
+                        -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
                 '''
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Test Container') {
             steps {
                 sh '''
-                    docker stop forest-honey || true
-                    docker rm forest-honey || true
-                '''
-            }
-        }
-
-        stage('Deploy Container') {
-            steps {
-                sh '''
-                    echo "Starting application..."
+                    docker rm -f forest-honey-test || true
 
                     docker run -d \
-                        --name forest-honey \
-                        -p 8081:80 \
-                        ${DOCKER_IMAGE}:${IMAGE_TAG}
+                        --name forest-honey-test \
+                        -p 8082:80 \
+                        ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                    sleep 5
+
+                    curl -f http://localhost:8082
+
+                    docker rm -f forest-honey-test
                 '''
             }
         }
 
-        stage('Health Check') {
+        stage('Push Image to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login \
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
+
+                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                        docker logout
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    sleep 5
+                     echo "Deploying Forest Honey to Kubernetes..."
 
-                    curl -f http://localhost:8081
+                     export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-                    echo "Application is running successfully!"
-                '''
+                     kubectl set image deployment/forest-honey \
+                     forest-honey=${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                     kubectl rollout status deployment/forest-honey
+
+                     echo "Kubernetes deployment successful!"
+                   '''
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment completed successfully!'
+            echo 'CI/CD Pipeline completed successfully!'
         }
 
         failure {
-            echo 'Deployment failed!'
+            echo 'CI/CD Pipeline failed!'
         }
     }
 }
